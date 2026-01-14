@@ -1,3 +1,7 @@
+Here is the corrected and polished version of your **Notebook README**. I have properly formatted the performance table and integrated the LaTeX formulas for a professional, academic feel.
+
+---
+
 # 🏦 Bank Customer Churn: Predictive Intelligence & Strategic Research
 
 **End-to-End Machine Learning Pipeline for Financial Risk Management**
@@ -38,7 +42,7 @@ A **Random Forest Classifier** was utilized to capture non-linear relationships 
 
 | Metric | Logistic Regression (Baseline) | **Random Forest (Final)** | **Improvement** |
 | --- | --- | --- | --- |
-| **Accuracy** |  | **** |  |
+| **Accuracy** | $81.25\% $  | **** |  |
 | **ROC-AUC** |  | **** |  |
 
 ### 🔍 Top Churn Drivers
@@ -79,3 +83,4 @@ The notebook generates the following assets for business integration:
 ### ✅ Conclusion
 
 By combining **predictive power ()** with **strategic segmentation**, this project enables the bank to prioritize its retention budget toward the customers who represent the highest financial value and the highest probability of exit.
+
