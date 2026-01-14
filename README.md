@@ -42,8 +42,8 @@ A **Random Forest Classifier** was utilized to capture non-linear relationships 
 
 | Metric | Logistic Regression (Baseline) | **Random Forest (Final)** | **Improvement** |
 | --- | --- | --- | --- |
-| **Accuracy** | $81.25\% $  | **** |  |
-| **ROC-AUC** |  | **** |  |
+| **Accuracy** | $81.25\% $  | **** |  $85.25\%$|
+| **ROC-AUC** | $0.7814$ | **** | $0.8351$ |
 
 ### 🔍 Top Churn Drivers
 
