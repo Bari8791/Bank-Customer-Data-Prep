@@ -1,6 +1,5 @@
 
-# 🏦 Bank Customer Churn: Predictive Intelligence & Strategic Research
-
+# 🏦 Bank Customer Churn Intelligence Dashboard
 ### *Operationalizing AI for Proactive Asset Retention*
 
 ---
