@@ -1,5 +1,5 @@
 
-# 🏦 **Bank Customer Churn – Strategic Command Center**
+🏦 Bank Customer Churn: Predictive Intelligence & Strategic Research
 
 ### *Operationalizing AI for Proactive Asset Retention*
 
