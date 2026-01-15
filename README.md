@@ -83,22 +83,3 @@ The notebook generates the following assets for business integration:
 
 By combining **predictive power ()** with **strategic segmentation**, this project enables the bank to prioritize its retention budget toward the customers who represent the highest financial value and the highest probability of exit.
 
-## 📁 Project Structure
-
-data/
-- raw/            → Original source files (untouched)
-- processed/      → Cleaned and engineered datasets
-
-notebooks/
-- End-to-end analysis, feature engineering, modeling, and validation
-
-models/
-- Serialized machine learning artifacts (Random Forest model & scaler)
-
-outputs/
-- Business-ready summaries, cluster profiles, and recommendations
-
-bank-churn-app/
-- Streamlit dashboard for executive decision-making
-
-
