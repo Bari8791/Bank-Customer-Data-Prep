@@ -1,171 +1,124 @@
 
 # 🏦 Bank Customer Churn Intelligence Dashboard
-### *Operationalizing AI for Proactive Asset Retention*
+
+**End-to-End Machine Learning Pipeline for Financial Risk Management**
+
+This project delivers a high-fidelity data science pipeline to solve the problem of customer attrition in retail banking. It moves from raw, "messy" data to a production-ready model that identifies high-value risk segments.
+
+> **Source:** Original analysis from Maven Analytics (Kaggle Dataset)
+> **Engineering Focus:** Feature creation, stratified validation, and numeric clustering.
+> **Scope:** 10,000 Total Samples (, ).
 
 ---
 
-## 🔍 Overview
+## 🏗️ 1. Technical Data Architecture
 
-This Streamlit application transforms predictive churn research into a **Strategic Command Center** for banking decision-makers.
+The foundation of this project is a robust cleaning and feature engineering suite designed for banking data.
 
-It enables **Portfolio Managers and Executives** to shift from **reactive churn reporting** to **proactive liquidity protection**, using explainable machine learning and real-time decision tools.
+### 🧹 Data Sanitization
 
-> **Purpose:** Turn AI predictions into **financial action**, not just dashboards.
+* **Currency Normalization:** Transformed `Balance` and `EstimatedSalary` strings into numeric types for mathematical processing.
+* **Integrity Checks:** Automated duplicate removal and median-based imputation for missing values to prevent data leakage.
+* **Encoding:** Converted categorical fields (`Geography`, `Gender`) into machine-readable formats while retaining geographic business distinctions.
 
----
+### 🛠️ Feature Engineering (The "Alpha" Features)
 
-## 🚀 What This App Delivers
+Three advanced financial ratios were engineered to capture customer behavior more effectively:
 
-### 📊 **Portfolio Risk Surveillance**
-
-* **Capital at Risk ($):** Live view of deposits exposed to churn
-* **Dynamic Recalculation:** KPIs update instantly as filters and thresholds change
-* **Executive Focus:** Risk expressed in **money**, not probabilities
-
----
-
-### 🧠 **Behavioral Micro-Segmentation**
-
-Identify *where* churn risk actually matters:
-
-**Filters include**
-
-* 🌍 Geography
-* 👥 Age & Tenure
-* 💳 Credit Card Ownership
-* 📦 Number of Products
-* ⚡ Active vs Inactive Customers
-* 💰 Balance / Liquidity Tiers
-
-> Enables precision targeting instead of blanket campaigns.
+1. **Product Density ():**  — Measures engagement depth over time.
+2. **Liquidity Leverage:**  — Indicates the proportion of personal wealth held at the bank.
+3. **Revenue Efficiency:**  — Estimates cross-sell potential relative to product usage.
 
 ---
 
-### 🧪 **Model Governance & Trust**
+## 🎯 2. Modeling Performance & Audit
 
-Built to earn **executive confidence in AI decisions**:
+A **Random Forest Classifier** was utilized to capture non-linear relationships in customer behavior, significantly outperforming the Logistic Regression baseline.
 
-* **ROC-AUC:** `0.8351`
-* **Precision & Recall:** Displayed live
-* **ROC Curve:** Visual audit of model discrimination power
+### 📊 Model Performance Benchmark
 
-[
-\text{Model: Random Forest} \quad (\text{AUC} = 0.8351)
-]
+| Metric   | Logistic Regression (Baseline) | Random Forest (Final) | Improvement |
+| -------- | ------------------------------ | --------------------- | ----------- |
+| Accuracy | 81.25%                         | 85.25%                | +4.00%      |
+| ROC-AUC  | 0.7814                         | 0.8351                | +6.87%      |
 
----
+### 🔍 Top Churn Drivers
 
-### 🎯 **Strategy Simulator (ROI Engine)**
+The model identifies these features as the primary predictors of customer exit:
 
-A controlled *What-If* environment to test retention actions **before spending money**.
-
-**Simulates**
-
-* Clients recovered
-* Liquidity preserved ($)
-* Portfolio health after intervention
-
-**Variables**
-
-* Incentive strength
-* Contact method (Automated vs High-Touch)
+1. **Age ( Importance):** Risk peaks significantly in the **40–60** demographic.
+2. **Product Count ( Importance):** Churn rate drops drastically as product holdings move from 1 to 2.
+3. **Income vs Product ( Importance):** Identifies under-utilization of products as a key exit indicator.
 
 ---
 
-### 📥 **Actionable CRM Outputs**
+## 🧭 3. Strategic Segmentation (K-Means)
 
-* Prioritized **High-Risk Client Lists**
-* One-click **CSV export**
-* Ready for CRM or Relationship Manager execution
+Using **K-Means Clustering ()**, I categorized the portfolio into actionable segments to move from "General Predictions" to "Targeted Interventions."
 
----
+### 📊 Risk Hierarchy & Recommendations
 
-## 🛠️ Technical Architecture
-
-Designed to reflect **real banking analytics systems**, not demos.
-
-| Layer           | Description                                         |
-| --------------- | --------------------------------------------------- |
-| **Model**       | Random Forest Classifier                            |
-| **Artifacts**   | Serialized model & scaler (`/models`)               |
-| **Frontend**    | Streamlit (Python)                                  |
-| **Data Layer**  | Cleaned & engineered outputs from notebook pipeline |
-| **Design Goal** | Fast, explainable, decision-ready                   |
+| Cluster       | Profile                        | Strategy                                                             | Risk Level   |
+| ------------- | ------------------------------ | -------------------------------------------------------------------- | ------------ |
+| **Cluster 0** | **High Balance / High Salary** | **VIP Retention:** Secure assets by cross-selling a second product.  | **CRITICAL** |
+| **Cluster 2** | High Balance / Low Salary      | **Debt Stabilization:** Offer financial counseling or consolidation. | **HIGH**     |
+| **Cluster 1** | Low Tenure / High Product      | **Onboarding Support:** High-touch service to survive Year 1.        | **MODERATE** |
+| **Cluster 3** | High Tenure / Low Balance      | **Loyalty Maintenance:** Low-cost rewards for a stable base.         | **STABLE**   |
 
 ---
 
-## 💻 Local Setup & Run
+## 💾 4. Project Outputs
 
-Run from the **project root**.
+The notebook generates the following assets for business integration:
 
-### 1️⃣ Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 2️⃣ Launch the dashboard
-
-```bash
-streamlit run bank-churn-app/customer_churn_dashboard.py
-```
-
-The app will open automatically in your browser.
+* `Bank_Churn_Final_With_NumericClusters.csv` — Master dataset for analysis and dashboards.
+* `cluster_summary_unscaled.csv` — Non-technical segment summary for stakeholders.
+* `recommendations_final.md` — Strategic playbook for retention campaigns.
 
 ---
 
-## 🧭 Executive Usage Guide
+## 📦 Bank-Customer-Churn-Project
 
-### 🔧 Risk Threshold Control
+bank-churn-app
+customer_churn_dashboard.py
+requirements.txt
+README.md
 
-Adjust **Churn Sensitivity** to control intervention strictness.
+data/raw
+Bank_Churn.csv
+Bank_Churn_Messy.xlsx
+Bank_Churn_Data_Dictionary.csv
 
-> Recommended focus:
-> [
-> P(\text{Exit}) > 0.80
-> ]
+data/processed
+Bank_Churn_Preprocessed.csv
+Bank_Churn_Final_With_NumericClusters.csv
+Bank_Churn_Final_Predictions.csv
 
-High certainty → High ROI → Fewer wasted incentives.
+models
+churn_model.pkl
+scaler.pkl
 
----
+notebooks
+Bank Customer Churn Analysis.ipynb
+Bank Customer Churn Analysis.py
 
-### 🧠 Priority Segment: *Cluster 0*
+outputs
+cluster_summary.csv
+recommendations_final.md
 
-* **Profile:** High Balance / High Salary
-* **Risk:** Largest liquidity exposure
-* **Strategy:** Early engagement + product deepening
-
-This segment delivers the **highest return on retention spend**.
-
----
-
-### 🎯 Simulate Recovery
-
-Test retention intensity and instantly view:
-
-* Liquidity recovered ($)
-* Portfolio health improvement (%)
-
----
-
-## ✅ Business Value
-
-This application closes the gap between **data science** and **banking decisions**.
-
-It enables leaders to:
-
-* Quantify churn in **financial terms**
-* Trust AI through built-in transparency
-* Allocate budgets **intelligently**
-* Act **before value exits the bank**
+requirements.txt
+README.md
 
 ---
 
-## 📌 Deployment Status
+## ✅ Conclusion
 
-* **Current:** Local / Portfolio-ready
-* **Designed for:** Streamlit Cloud or internal bank deployment
-* **Reproducibility:** Models, scalers, and datasets fully versioned
+This project demonstrates a **full end-to-end banking churn solution**:
+
+* From raw customer data to **engineered features** and predictive models.
+* **Random Forest** provides actionable, high-confidence predictions with measurable ROI improvements.
+* **Strategic segmentation and dashboards** allow portfolio managers to prioritize high-value customers and reduce attrition risk.
+* All outputs are **production-ready** and structured for **real-world deployment**, ensuring clarity, auditability, and immediate business impact.
 
 ---
 
