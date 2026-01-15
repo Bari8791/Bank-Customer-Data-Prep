@@ -1,5 +1,3 @@
-
-
 # 🏦 Bank Customer Churn: Predictive Intelligence & Strategic Research
 
 **End-to-End Machine Learning Pipeline for Financial Risk Management**
@@ -39,10 +37,9 @@ A **Random Forest Classifier** was utilized to capture non-linear relationships 
 ### 📊 Model Performance Benchmark
 
 | Metric   | Logistic Regression (Baseline) | Random Forest (Final) | Improvement |
-|----------|-------------------------------|----------------------|------------|
-| Accuracy | 81.25%                        | 85.25%               | +4.00%     |
-| ROC-AUC  | 0.7814                        | 0.8351               | +6.87%     |
-
+| -------- | ------------------------------ | --------------------- | ----------- |
+| Accuracy | 81.25%                         | 85.25%                | +4.00%      |
+| ROC-AUC  | 0.7814                         | 0.8351                | +6.87%      |
 
 ### 🔍 Top Churn Drivers
 
@@ -60,12 +57,12 @@ Using **K-Means Clustering ()**, I categorized the portfolio into actionable seg
 
 ### 📊 Risk Hierarchy & Recommendations
 
-| Cluster | Profile | Strategy | Risk Level |
-| --- | --- | --- | --- |
-| **Cluster 0** | **High Balance / High Salary** | **VIP Retention:** Secure assets by cross-selling a second product. | **CRITICAL** |
-| **Cluster 2** | High Balance / Low Salary | **Debt Stabilization:** Offer financial counseling or consolidation. | **HIGH** |
-| **Cluster 1** | Low Tenure / High Product | **Onboarding Support:** High-touch service to survive Year 1. | **MODERATE** |
-| **Cluster 3** | High Tenure / Low Balance | **Loyalty Maintenance:** Low-cost rewards for a stable base. | **STABLE** |
+| Cluster       | Profile                        | Strategy                                                             | Risk Level   |
+| ------------- | ------------------------------ | -------------------------------------------------------------------- | ------------ |
+| **Cluster 0** | **High Balance / High Salary** | **VIP Retention:** Secure assets by cross-selling a second product.  | **CRITICAL** |
+| **Cluster 2** | High Balance / Low Salary      | **Debt Stabilization:** Offer financial counseling or consolidation. | **HIGH**     |
+| **Cluster 1** | Low Tenure / High Product      | **Onboarding Support:** High-touch service to survive Year 1.        | **MODERATE** |
+| **Cluster 3** | High Tenure / Low Balance      | **Loyalty Maintenance:** Low-cost rewards for a stable base.         | **STABLE**   |
 
 ---
 
@@ -79,7 +76,50 @@ The notebook generates the following assets for business integration:
 
 ---
 
-### ✅ Conclusion
+## ✅ Conclusion
 
-By combining **predictive power ()** with **strategic segmentation**, this project enables the bank to prioritize its retention budget toward the customers who represent the highest financial value and the highest probability of exit.
+This project demonstrates a **full end-to-end banking churn solution**:
+
+* From raw customer data to **engineered features** and predictive models.
+* **Random Forest** provides actionable, high-confidence predictions with measurable ROI improvements.
+* **Strategic segmentation and dashboards** allow portfolio managers to prioritize high-value customers and reduce attrition risk.
+* All outputs are **production-ready** and structured for **real-world deployment**, ensuring clarity, auditability, and immediate business impact.
+
+---
+
+### Bank-Customer-Churn-Project
+
+*  bank-churn-app
+*  customer_churn_dashboard.py
+*  requirements.txt
+*  README.md
+
+  ### data
+*  raw
+*  Bank_Churn.csv
+*  Bank_Churn_Messy.xlsx
+*  Bank_Churn_Data_Dictionary.csv
+  
+*  processed
+*  Bank_Churn_Preprocessed.csv
+*  Bank_Churn_Final_With_NumericClusters.csv
+*  Bank_Churn_Final_Predictions.csv
+
+  ### models
+*  churn_model.pkl
+*  scaler.pkl
+
+  ### notebooks
+*  Bank Customer Churn Analysis.ipynb
+*  Bank Customer Churn Analysis.py
+
+  ### outputs
+*  cluster_summary.csv
+*  recommendations_final.md
+
+  ### requirements.txt
+  ### README.md
+
+---
+
 
