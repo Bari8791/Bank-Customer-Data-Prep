@@ -1,6 +1,4 @@
-Here is the corrected and polished version of your **Notebook README**. I have properly formatted the performance table and integrated the LaTeX formulas for a professional, academic feel.
 
----
 
 # 🏦 Bank Customer Churn: Predictive Intelligence & Strategic Research
 
