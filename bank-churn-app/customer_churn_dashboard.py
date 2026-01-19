@@ -9,7 +9,7 @@ from sklearn.calibration import calibration_curve
 # =========================================================
 # 1. PAGE STYLING
 # =========================================================
-st.set_page_config(page_title="Bank Customer Intelligence", layout="wide")
+st.set_page_config(page_title="Bank Customer Churn Intelligence Dashboard", layout="wide")
 
 st.markdown("""
 <style>
