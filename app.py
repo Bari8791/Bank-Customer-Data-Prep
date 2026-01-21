@@ -7,7 +7,11 @@ import seaborn as sns
 import os
 
 # --- 1. PAGE CONFIG ---
-st.set_page_config(page_title="BANK CUSTOMER CHURN APP", layout="wide", page_icon="🏦")
+st.set_page_config(
+    page_title="BANK CUSTOMER CHURN APP",
+    layout="wide",
+    page_icon="🏦"
+)
 
 # --- 2. ASSET LOADING ---
 @st.cache_resource
@@ -24,7 +28,7 @@ def load_assets():
 
 rf_model, scaler_model, best_threshold = load_assets()
 
-# --- 3. DATA PROCESSING & FEATURE ENGINEERING ---
+# --- 3. DATA PROCESSING AND FEATURE ENGINEERING ---
 def process_data(df):
     df = df.copy()
     
@@ -49,6 +53,7 @@ def process_data(df):
                 break
     df = df.rename(columns=found_cols)
 
+    # Feature engineering
     df['Gender_num'] = np.where(df['Gender'].astype(str).str.strip().str.lower().str.startswith('f'), 1, 0)
     df['ProductPerYear'] = df['NumOfProducts'] / (df['Tenure'] + 0.1)
     df['balance_to_income'] = df['Balance'] / (df['EstimatedSalary'] + 1)
@@ -67,26 +72,24 @@ def process_data(df):
     
     return df, model_features
 
-# --- 4. SIDEBAR & DATA SOURCE ---
+# --- 4. SIDEBAR / DATA SOURCE ---
 with st.sidebar:
     st.header("📂 Data Controller")
     
-    st.info(
-        "ℹ️ **About This App:**\n\n"
-        "- Predicts customer churn using AI.\n"
-        "- **Client Upload Mode** is the default for your analysis.\n"
-        "- Internal Database is for demo purposes.\n"
-        "- Single Customer AI Assessment lets you test individual profiles.\n"
-        "- Filters above control batch results displayed below."
+    # Dashboard Mode info
+    st.markdown(
+        "💡 **Dashboard Mode:**\n"
+        "- 🏠 *Internal Database*: Demo / read-only data example.\n"
+        "- 📤 *Client Upload Mode*: Upload your own CSV for full analysis."
     )
     
-    # Default to Client Upload Mode (index=1)
+    # Default: Client Upload Mode
     mode = st.radio(
-        "Dashboard Mode:",
-        ["🏠 Internal Database", "📤 Client Upload Mode"],
-        index=1
+        "Select Mode:",
+        options=["🏠 Internal Database", "📤 Client Upload Mode"],
+        index=1  # Client Upload Mode selected by default
     )
-
+    
     st.divider()
     
     template = pd.DataFrame({
@@ -103,31 +106,26 @@ with st.sidebar:
         'IsActiveMember': [1],
         'EstimatedSalary': [75000]
     })
-    
-    st.download_button(
-        "📥 Download Template CSV", 
-        template.to_csv(index=False), 
-        "template.csv"
-    )
+    st.download_button("📥 Download Template CSV", template.to_csv(index=False), "template.csv")
 
-# Load data
+# --- 5. LOAD DATA ---
 if mode == "📤 Client Upload Mode":
     st.title("📤 Client Batch Analysis")
     uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
     if not uploaded_file: st.stop()
     raw_df = pd.read_csv(uploaded_file)
 else:
-    st.title("🏦 BANK CUSTOMER CHURN APP (Demo)")
+    st.title("🏠 Internal Demo Database")
     raw_df = pd.read_csv("data/processed/Bank_Churn_Final_With_NumericClusters.csv")
 
 df_results, model_feats = process_data(raw_df)
 
-# --- 5. GLOBAL FILTERS ---
+# --- 6. GLOBAL FILTERS ---
 with st.container(border=True):
     st.subheader("🕵️ Global Portfolio Search & Filters")
     f1, f2, f3, f4 = st.columns(4)
+    geo_col = next((c for c in ['Geography', 'Country'] if c in df_results.columns), None)
     with f1:
-        geo_col = next((c for c in ['Geography', 'Country'] if c in df_results.columns), None)
         countries = df_results[geo_col].unique() if geo_col else ["Global"]
         country_sel = st.multiselect("Geography", options=countries, default=countries)
     with f2:
@@ -143,7 +141,7 @@ mask = (df_results.Age.between(age_sel[0], age_sel[1])) & \
 if geo_col: mask &= (df_results[geo_col].isin(country_sel))
 filtered_df = df_results[mask]
 
-# --- 6. TOP KPIs ---
+# --- 7. TOP KPIs ---
 k1, k2, k3, k4 = st.columns(4)
 at_risk_money = filtered_df[filtered_df['Prob'] >= best_threshold]['Balance'].sum()
 k1.metric("💰 Exposure", f"${at_risk_money:,.0f}")
@@ -153,7 +151,7 @@ with k4:
     st.caption("🤖 AI Health")
     st.progress(0.88)
 
-# --- 7. SINGLE CUSTOMER AI ASSESSMENT ---
+# --- 8. SINGLE CUSTOMER AI ASSESSMENT ---
 st.divider()
 st.subheader("👤 Single Customer AI Assessment")
 with st.expander("Analyze & Export Profile", expanded=False):
@@ -198,7 +196,7 @@ with st.expander("Analyze & Export Profile", expanded=False):
         ind_csv = res.to_csv(index=False).encode('utf-8')
         st.download_button("📥 Export Individual Profile (CSV)", ind_csv, "individual_assessment.csv")
 
-# --- 8. WHAT-IF SIMULATION & ROI ---
+# --- 9. WHAT-IF SIMULATION & RETENTION ROI ---
 st.divider()
 st.subheader("💰 What-If Simulation & Retention ROI")
 with st.container(border=True):
@@ -208,7 +206,8 @@ with st.container(border=True):
     sim_bal = s2.slider("Target Balance Bracket ($)", 0, 250000, (20000, 250000))
     sim_cost = s3.number_input("Cost to Save 1 Customer ($)", 10, 1000, 150)
 
-sim_df = filtered_df[(filtered_df.Age.between(sim_age[0], sim_age[1])) & (filtered_df.Balance.between(sim_bal[0], sim_bal[1]))]
+sim_df = filtered_df[(filtered_df.Age.between(sim_age[0], sim_age[1])) & 
+                     (filtered_df.Balance.between(sim_bal[0], sim_bal[1]))]
 sim_at_risk = sim_df[sim_df['Prob'] >= best_threshold]['Balance'].sum()
 sim_count = len(sim_df[sim_df['Prob'] >= best_threshold])
 
@@ -235,7 +234,7 @@ with col_sim2:
     ax_curve.set_title("Targeted Segment Risk Distribution")
     st.pyplot(fig_curve)
 
-# --- 9. AI BRAIN HEALTH ---
+# --- 10. AI BRAIN HEALTH ---
 st.divider()
 st.subheader("🧠 AI Brain Health & Interpretability")
 h1, h2 = st.columns(2)
@@ -255,6 +254,6 @@ with h2:
     st.download_button("📥 Export Full Batch Report (CSV)", filtered_df.to_csv(index=False), "master_churn_report.csv")
 
 st.info(
-    "💡 **Executive Summary:** The model identifies Age and Product engagement as the strongest churn predictors. "
-    "Targeted campaigns for customers aged 30-50 with high balances show the highest potential ROI."
+    "💡 **Executive Summary:** Age and Product engagement are strongest churn predictors. "
+    "Targeted campaigns for customers aged 30-50 with high balances show highest ROI potential."
 )
