@@ -7,7 +7,7 @@ import seaborn as sns
 import os
 
 # --- 1. PAGE CONFIG ---
-st.set_page_config(page_title="Executive AI Command", layout="wide", page_icon="🏦")
+st.set_page_config(page_title="BANK CUSTOMER CHURN APP", layout="wide", page_icon="🏦")
 
 # --- 2. ASSET LOADING ---
 @st.cache_resource
@@ -24,11 +24,10 @@ def load_assets():
 
 rf_model, scaler_model, best_threshold = load_assets()
 
-# --- 3. DATA PROCESSING AND FEATURE ENGINEERING ---
+# --- 3. DATA PROCESSING & FEATURE ENGINEERING ---
 def process_data(df):
     df = df.copy()
     
-    # Alias map to standardize column names
     alias_map = {
         'CreditScore': ['creditscore', 'score', 'credit_rating', 'cr_score'],
         'Gender': ['gender', 'sex', 'gen', 'gender_type'],
@@ -50,7 +49,6 @@ def process_data(df):
                 break
     df = df.rename(columns=found_cols)
 
-    # Feature engineering
     df['Gender_num'] = np.where(df['Gender'].astype(str).str.strip().str.lower().str.startswith('f'), 1, 0)
     df['ProductPerYear'] = df['NumOfProducts'] / (df['Tenure'] + 0.1)
     df['balance_to_income'] = df['Balance'] / (df['EstimatedSalary'] + 1)
@@ -69,11 +67,28 @@ def process_data(df):
     
     return df, model_features
 
-# --- 4. DATA SOURCE / SIDEBAR ---
+# --- 4. SIDEBAR & DATA SOURCE ---
 with st.sidebar:
     st.header("📂 Data Controller")
-    mode = st.radio("Dashboard Mode:", ["🏠 Internal Database", "📤 Client Upload Mode"])
+    
+    st.info(
+        "ℹ️ **About This App:**\n\n"
+        "- Predicts customer churn using AI.\n"
+        "- **Client Upload Mode** is the default for your analysis.\n"
+        "- Internal Database is for demo purposes.\n"
+        "- Single Customer AI Assessment lets you test individual profiles.\n"
+        "- Filters above control batch results displayed below."
+    )
+    
+    # Default to Client Upload Mode (index=1)
+    mode = st.radio(
+        "Dashboard Mode:",
+        ["🏠 Internal Database", "📤 Client Upload Mode"],
+        index=1
+    )
+
     st.divider()
+    
     template = pd.DataFrame({
         'CustomerId': [0],
         'Surname': ['Test'],
@@ -88,15 +103,21 @@ with st.sidebar:
         'IsActiveMember': [1],
         'EstimatedSalary': [75000]
     })
-    st.download_button("📥 Download Template CSV", template.to_csv(index=False), "template.csv")
+    
+    st.download_button(
+        "📥 Download Template CSV", 
+        template.to_csv(index=False), 
+        "template.csv"
+    )
 
+# Load data
 if mode == "📤 Client Upload Mode":
     st.title("📤 Client Batch Analysis")
     uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
     if not uploaded_file: st.stop()
     raw_df = pd.read_csv(uploaded_file)
 else:
-    st.title("🏦 Executive AI Command Center")
+    st.title("🏦 BANK CUSTOMER CHURN APP (Demo)")
     raw_df = pd.read_csv("data/processed/Bank_Churn_Final_With_NumericClusters.csv")
 
 df_results, model_feats = process_data(raw_df)
@@ -171,14 +192,13 @@ with st.expander("Analyze & Export Profile", expanded=False):
         st.write(f"#### Result: {verdict}")
         st.metric("Churn Probability", f"{prob:.2%}")
 
-        # Scrollable table with all features
         st.subheader("📝 Customer Feature Table")
         st.dataframe(res, use_container_width=True)
 
         ind_csv = res.to_csv(index=False).encode('utf-8')
         st.download_button("📥 Export Individual Profile (CSV)", ind_csv, "individual_assessment.csv")
 
-# --- 8. WHAT-IF SIMULATION & RETENTION ROI ---
+# --- 8. WHAT-IF SIMULATION & ROI ---
 st.divider()
 st.subheader("💰 What-If Simulation & Retention ROI")
 with st.container(border=True):
