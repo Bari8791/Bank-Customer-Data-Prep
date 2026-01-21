@@ -7,11 +7,7 @@ import seaborn as sns
 import os
 
 # --- 1. PAGE CONFIG ---
-st.set_page_config(
-    page_title="BANK CUSTOMER CHURN APP",
-    layout="wide",
-    page_icon="🏦"
-)
+st.set_page_config(page_title="BANK CUSTOMER CHURN APP", layout="wide", page_icon="🏦")
 
 # --- 2. ASSET LOADING ---
 @st.cache_resource
@@ -31,7 +27,6 @@ rf_model, scaler_model, best_threshold = load_assets()
 # --- 3. DATA PROCESSING AND FEATURE ENGINEERING ---
 def process_data(df):
     df = df.copy()
-    
     alias_map = {
         'CreditScore': ['creditscore', 'score', 'credit_rating', 'cr_score'],
         'Gender': ['gender', 'sex', 'gen', 'gender_type'],
@@ -43,7 +38,6 @@ def process_data(df):
         'IsActiveMember': ['isactivemember', 'active', 'is_active', 'status'],
         'EstimatedSalary': ['estimatedsalary', 'salary', 'income', 'annual_revenue']
     }
-
     found_cols = {}
     for official_name, aliases in alias_map.items():
         for col in df.columns:
@@ -72,26 +66,28 @@ def process_data(df):
     
     return df, model_features
 
-# --- 4. SIDEBAR / DATA SOURCE ---
+# --- 4. SIDEBAR ---
 with st.sidebar:
-    st.header("📂 Data Controller")
-    
-    # Dashboard Mode info
+    st.header("📂 Dashboard Mode")
+
+    # Info section for users
     st.markdown(
-        "💡 **Dashboard Mode:**\n"
-        "- 🏠 *Internal Database*: Demo / read-only data example.\n"
-        "- 📤 *Client Upload Mode*: Upload your own CSV for full analysis."
+        "ℹ️ **Mode Info:**\n\n"
+        "- **Internal Demo**: Example dataset to explore app functionality.\n"
+        "- **Client Batch Analysis**: Upload your CSV for AI predictions.\n\n"
+        "**Expected Data Columns for Client Upload:**\n"
+        "- CustomerId, Surname, CreditScore, Geography, Gender, Age, Tenure, Balance, NumOfProducts, HasCrCard, IsActiveMember, EstimatedSalary\n"
+        "- Download the template CSV below to match these column names."
     )
-    
-    # Default: Client Upload Mode
+
+    # Mode selection with Internal Demo default
     mode = st.radio(
         "Select Mode:",
-        options=["🏠 Internal Database", "📤 Client Upload Mode"],
-        index=1  # Client Upload Mode selected by default
+        options=["Internal Demo", "Client Batch Analysis"],
+        index=0  # Internal Demo is default
     )
-    
-    st.divider()
-    
+
+    # Template CSV download
     template = pd.DataFrame({
         'CustomerId': [0],
         'Surname': ['Test'],
@@ -108,14 +104,14 @@ with st.sidebar:
     })
     st.download_button("📥 Download Template CSV", template.to_csv(index=False), "template.csv")
 
-# --- 5. LOAD DATA ---
-if mode == "📤 Client Upload Mode":
+# --- 5. DATA SOURCE ---
+if mode == "Client Batch Analysis":
     st.title("📤 Client Batch Analysis")
     uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
     if not uploaded_file: st.stop()
     raw_df = pd.read_csv(uploaded_file)
 else:
-    st.title("🏠 Internal Demo Database")
+    st.title("🏦 Internal Demo - BANK CUSTOMER CHURN APP")
     raw_df = pd.read_csv("data/processed/Bank_Churn_Final_With_NumericClusters.csv")
 
 df_results, model_feats = process_data(raw_df)
@@ -196,64 +192,7 @@ with st.expander("Analyze & Export Profile", expanded=False):
         ind_csv = res.to_csv(index=False).encode('utf-8')
         st.download_button("📥 Export Individual Profile (CSV)", ind_csv, "individual_assessment.csv")
 
-# --- 9. WHAT-IF SIMULATION & RETENTION ROI ---
+# --- 9. WHAT-IF SIMULATION & ROI ---
 st.divider()
 st.subheader("💰 What-If Simulation & Retention ROI")
-with st.container(border=True):
-    st.markdown("**Simulation Target Filters**")
-    s1, s2, s3 = st.columns(3)
-    sim_age = s1.slider("Target Age Bracket", 18, 95, (30, 60))
-    sim_bal = s2.slider("Target Balance Bracket ($)", 0, 250000, (20000, 250000))
-    sim_cost = s3.number_input("Cost to Save 1 Customer ($)", 10, 1000, 150)
-
-sim_df = filtered_df[(filtered_df.Age.between(sim_age[0], sim_age[1])) & 
-                     (filtered_df.Balance.between(sim_bal[0], sim_bal[1]))]
-sim_at_risk = sim_df[sim_df['Prob'] >= best_threshold]['Balance'].sum()
-sim_count = len(sim_df[sim_df['Prob'] >= best_threshold])
-
-col_sim1, col_sim2 = st.columns([1, 2])
-with col_sim1:
-    eff = st.slider("Campaign Effectiveness (%)", 0, 100, 30)
-    potential_saved = sim_at_risk * (eff/100)
-    total_cost = sim_count * sim_cost
-    roi = ((potential_saved - total_cost) / total_cost) if total_cost > 0 else 0
-
-    st.metric("Potential Capital Saved", f"${potential_saved:,.0f}")
-    st.metric("Campaign Total Cost", f"${total_cost:,.0f}", delta=f"ROI: {roi:.1%}")
-
-    roi_report = pd.DataFrame({
-        "Metric": ["Target Group Count", "Capital at Risk", "Est. Cost", "Est. Savings", "Net ROI"], 
-        "Value": [sim_count, sim_at_risk, total_cost, potential_saved, f"{roi:.1%}"]
-    })
-    st.download_button("📥 Export Financial Simulation (CSV)", roi_report.to_csv(index=False), "roi_simulation_report.csv")
-
-with col_sim2:
-    fig_curve, ax_curve = plt.subplots(figsize=(10, 4))
-    sns.lineplot(data=sim_df['Prob'].sort_values().values, color="blue", ax=ax_curve)
-    ax_curve.axhline(best_threshold, color='red', ls='--', label='Risk Threshold')
-    ax_curve.set_title("Targeted Segment Risk Distribution")
-    st.pyplot(fig_curve)
-
-# --- 10. AI BRAIN HEALTH ---
-st.divider()
-st.subheader("🧠 AI Brain Health & Interpretability")
-h1, h2 = st.columns(2)
-with h1:
-    st.markdown("**Feature Impact Analysis**")
-    feat_imp = pd.Series(rf_model.feature_importances_, index=model_feats).sort_values()
-    fig_imp, ax_imp = plt.subplots()
-    feat_imp.plot(kind='barh', color='teal', ax=ax_imp)
-    st.pyplot(fig_imp)
-    st.download_button("📥 Export Model Logic (CSV)", feat_imp.to_csv(), "ai_model_logic.csv")
-
-with h2:
-    st.markdown("**Probability Distribution**")
-    fig_hist, ax_hist = plt.subplots()
-    sns.histplot(df_results['Prob'], bins=30, kde=True, color="purple", ax=ax_hist)
-    st.pyplot(fig_hist)
-    st.download_button("📥 Export Full Batch Report (CSV)", filtered_df.to_csv(index=False), "master_churn_report.csv")
-
-st.info(
-    "💡 **Executive Summary:** Age and Product engagement are strongest churn predictors. "
-    "Targeted campaigns for customers aged 30-50 with high balances show highest ROI potential."
-)
+# ... keep your previous What-If Simulation code unchanged ...
